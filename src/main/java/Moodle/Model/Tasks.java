@@ -11,8 +11,8 @@ import java.util.Set;
 @Data
 public class Tasks {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Integer id;
     @NotNull
     private String title;
     private String contents;

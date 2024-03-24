@@ -10,8 +10,8 @@ import java.util.Date;
 @Data
 public class Files {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Integer id;
     @NotNull
     private String name;
     @NotNull

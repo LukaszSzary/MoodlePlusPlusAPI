@@ -18,7 +18,7 @@ public class AuthenticationController {
         this.service=service;
     }
     @PostMapping("/register")
-    public ResponseEntity<String> registerNewUser(@RequestBody @Valid UserDto user){
+    public ResponseEntity<String> registerNewUser(@Valid @RequestBody  UserDto user){
         try {
             service.registerUser(user);
             return new ResponseEntity<>("Created", HttpStatus.CREATED);
@@ -28,7 +28,7 @@ public class AuthenticationController {
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid LoginDto loginDto){
+    public ResponseEntity<String> login(@Valid @RequestBody  LoginDto loginDto){
         return ResponseEntity.ok(service.loginUser(loginDto));
     }
 }

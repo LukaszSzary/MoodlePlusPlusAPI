@@ -16,8 +16,15 @@ import java.util.function.Function;
 public class JwtService {
     private final String SECRET_KEY="361c62233128853c320d4871a0472b77c5483af984467438489b96eaf41223ff";
 
+    public String getTokenFromHeader(String token){
+       return token.substring(7);
+    }
     public String extractUserMail(String token){
         return extractClaim(token, Claims::getSubject);
+    }
+    public String extractUserId(String token){
+        Claims claims = extractAllClaims(token);
+        return claims.getOrDefault("id","-1").toString();
     }
     public boolean isValid(String token, UserDetails user){
         String userMail = extractUserMail(token);
@@ -56,4 +63,5 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64URL.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
 }

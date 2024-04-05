@@ -18,7 +18,7 @@ public class AuthenticationController {
         this.service=service;
     }
     @PostMapping("/register")
-    public ResponseEntity<String> registerNewUser(@Valid @RequestBody  UserDto user){
+    public ResponseEntity<String> registerNewUser( @RequestBody @Valid UserDto user){
         try {
             service.registerUser(user);
             return new ResponseEntity<>("Created", HttpStatus.CREATED);

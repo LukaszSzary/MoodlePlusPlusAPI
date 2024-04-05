@@ -13,15 +13,14 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasAuthority('admin')")
 public class RoleModerationController {
     private final RoleModerationService service;
-
     RoleModerationController(RoleModerationService service){
         this.service=service;
     }
+
     @PostMapping("/grant/student/role")
     public ResponseEntity<String> grantStudentRole(@RequestBody String mail ){
         try {
             service.giveStudentRole(mail);
-
             return ResponseEntity.ok("Role granted.");
         }
         catch (Exception e){
@@ -32,7 +31,6 @@ public class RoleModerationController {
     public ResponseEntity<String> grantTutorRole(@RequestBody String mail ){
         try {
             service.giveTutorRole(mail);
-
             return ResponseEntity.ok("Role granted.");
         }
         catch (Exception e){
@@ -41,10 +39,8 @@ public class RoleModerationController {
     }
     @PostMapping("/grant/admin/role")
     public ResponseEntity<String> grantAdminRole(@RequestBody String mail){
-
         try {
             service.giveAdminRole(mail);
-
             return ResponseEntity.ok("Role granted.");
         }
         catch (Exception e){

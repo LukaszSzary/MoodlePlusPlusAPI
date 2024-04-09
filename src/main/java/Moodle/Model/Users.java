@@ -33,16 +33,16 @@ public class Users implements UserDetails {
     @ManyToMany()
     @JoinTable(
             name="courses_owned",
-            joinColumns = @JoinColumn(name ="user_id"),
-            inverseJoinColumns = @JoinColumn(name="course_id")
+            joinColumns = @JoinColumn(name ="users_id"),
+            inverseJoinColumns = @JoinColumn(name="courses_id")
     )
     private Set<Courses> courses_owned = new HashSet<>();
     @ManyToMany
 
     @JoinTable(
             name="courses_joined",
-            joinColumns = @JoinColumn(name ="joined_courses_id"),
-            inverseJoinColumns = @JoinColumn(name="student_id")
+            joinColumns = @JoinColumn(name ="users_id"),
+            inverseJoinColumns = @JoinColumn(name="courses_id")
     )
     private Set<Courses> courses_joined = new HashSet<>();
 

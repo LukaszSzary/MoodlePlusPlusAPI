@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,23 +29,26 @@ public class Users implements UserDetails {
     private String password;
     @NotNull
     private Role role;
-    @Transient
-    @ManyToMany
+
+    @ManyToMany()
     @JoinTable(
             name="courses_owned",
-            joinColumns = @JoinColumn(name ="owned_courses_id"),
-            inverseJoinColumns = @JoinColumn(name="tutor_id")
+            joinColumns = @JoinColumn(name ="user_id"),
+            inverseJoinColumns = @JoinColumn(name="course_id")
     )
-    private Set<Courses> courses_owned;
-    @Transient
+    private Set<Courses> courses_owned = new HashSet<>();
     @ManyToMany
+
     @JoinTable(
             name="courses_joined",
             joinColumns = @JoinColumn(name ="joined_courses_id"),
             inverseJoinColumns = @JoinColumn(name="student_id")
     )
-    private Set<Courses> courses_joined;
+    private Set<Courses> courses_joined = new HashSet<>();
 
+    public void addCourseToOwned(Courses courses){
+        this.courses_owned.add(courses);
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -73,4 +77,5 @@ public class Users implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

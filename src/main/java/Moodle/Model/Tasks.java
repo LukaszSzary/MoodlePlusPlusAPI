@@ -1,10 +1,12 @@
 package Moodle.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -13,7 +15,7 @@ public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-    @NotNull
+    @NotEmpty
     private String title;
     private String contents;
     private Integer number_of_files;
@@ -23,11 +25,11 @@ public class Tasks {
     private Date date_of_start;
     private Date date_of_end;
     private String available_file_extensions;
-    @Transient
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id",nullable = false)
     private Courses course;
-    @Transient
+
     @OneToMany(mappedBy = "task", orphanRemoval = true)
-    private Set<Files> files;
+    private Set<Files> files= new HashSet<>();
 }

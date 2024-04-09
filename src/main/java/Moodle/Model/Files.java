@@ -20,7 +20,7 @@ public class Files {
     private Integer volume;
     @NotNull
     private Date date_of_upload;
-    @Transient
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id",nullable = false)
     private Tasks task;

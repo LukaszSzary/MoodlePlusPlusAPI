@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,5 +32,5 @@ public class Tasks {
     private Courses course;
 
     @OneToMany(mappedBy = "task", orphanRemoval = true)
-    private Set<Files> files= new HashSet<>();
+    private List<Files> files;
 }

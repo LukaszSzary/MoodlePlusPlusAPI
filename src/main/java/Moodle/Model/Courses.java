@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,15 +19,25 @@ public class Courses {
     private String title;
 
     @OneToMany(mappedBy = "course", orphanRemoval = true)
-    private Set<Tasks> tasks = new HashSet<>();
+    private List<Tasks> tasks;
 
 
-    @ManyToMany(mappedBy = "courses_owned")
-    private Set<Users> tutors = new HashSet<Users>();
 
-    @ManyToMany(mappedBy = "courses_joined")
-    private Set<Users> students = new HashSet<>();
-    public void addTutor(Users user){
-        tutors.add(user);
-    }
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name="course_owners",
+            joinColumns = @JoinColumn(name ="courses_id"),
+            inverseJoinColumns = @JoinColumn(name="users_id")
+    )
+
+    private List<Users> course_owners;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name="course_students",
+            joinColumns = @JoinColumn(name ="courses_id"),
+            inverseJoinColumns = @JoinColumn(name="users_id")
+    )
+    private List<Users> course_students;
 }

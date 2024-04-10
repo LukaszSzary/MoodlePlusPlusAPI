@@ -1,5 +1,6 @@
 package Moodle.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -26,54 +27,49 @@ public class Users implements UserDetails {
     @NotNull
     private String mail;
     @NotNull
+    @JsonIgnore
     private String password;
     @NotNull
     private Role role;
 
-    @ManyToMany()
-    @JoinTable(
-            name="courses_owned",
-            joinColumns = @JoinColumn(name ="users_id"),
-            inverseJoinColumns = @JoinColumn(name="courses_id")
-    )
-    private Set<Courses> courses_owned = new HashSet<>();
-    @ManyToMany
+    @ManyToMany(mappedBy = "course_owners",cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    private List<Courses> courses_owned;
 
-    @JoinTable(
-            name="courses_joined",
-            joinColumns = @JoinColumn(name ="users_id"),
-            inverseJoinColumns = @JoinColumn(name="courses_id")
-    )
-    private Set<Courses> courses_joined = new HashSet<>();
-
-    public void addCourseToOwned(Courses courses){
-        this.courses_owned.add(courses);
-    }
+    @ManyToMany(mappedBy = "course_students",cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    private List<Courses> courses_joined;
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return this.mail;
     }//Yes, it's dumb, but it is what it is
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }

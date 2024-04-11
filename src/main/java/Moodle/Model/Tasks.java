@@ -5,10 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -32,5 +29,5 @@ public class Tasks {
     private Courses course;
 
     @OneToMany(mappedBy = "task", orphanRemoval = true)
-    private List<Files> files;
+    private List<Files> files = new ArrayList<>();
 }

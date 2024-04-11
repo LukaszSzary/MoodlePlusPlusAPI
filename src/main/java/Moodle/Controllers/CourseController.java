@@ -31,19 +31,31 @@ public class CourseController {
         return ResponseEntity.ok(courseService.addCourse(courseDto,controllerService.getAuthenticatedUser(authentication)));
     }
 
-    @PostMapping("/update/{id}")
-    public Object update(@PathVariable int id,@RequestBody @Valid CourseDto courseDto, @CurrentSecurityContext(expression = "authentication")
+    @PostMapping("/update")
+    public Object update(@RequestBody @Valid Courses course, @CurrentSecurityContext(expression = "authentication")
                                             Authentication authentication){
         try {
-            return ResponseEntity.ok(courseService.updateCourse(id, courseDto, controllerService.getAuthenticatedUser(authentication)));
+            return ResponseEntity.ok(courseService.updateCourse(course, controllerService.getAuthenticatedUser(authentication)));
         }
         catch (Exception e){
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
 
     }
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deltete(){
-        return ResponseEntity.ok("");
+    @DeleteMapping("/delete/{id}")
+    public Object deltete(@PathVariable int id,@CurrentSecurityContext(expression = "authentication")
+                                              Authentication authentication){
+        try {
+            if(courseService.deleteCourse(id, controllerService.getAuthenticatedUser(authentication))){
+                return ResponseEntity.ok("");
+            }
+            else {
+                return new ResponseEntity<>("You dont have authority to do it",HttpStatus.CONFLICT);
+            }
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(),HttpStatus.I_AM_A_TEAPOT);
+        }
+        //return ResponseEntity.ok(courseService.deleteCourse(id,controllerService.getAuthenticatedUser(authentication)));
     }
 }

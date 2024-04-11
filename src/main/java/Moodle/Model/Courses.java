@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +20,7 @@ public class Courses {
     private String title;
 
     @OneToMany(mappedBy = "course", orphanRemoval = true)
-    private List<Tasks> tasks;
+    private List<Tasks> tasks = new ArrayList<>();
 
 
 
@@ -31,7 +32,7 @@ public class Courses {
             inverseJoinColumns = @JoinColumn(name="users_id")
     )
 
-    private List<Users> course_owners;
+    private List<Users> course_owners = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
@@ -39,5 +40,5 @@ public class Courses {
             joinColumns = @JoinColumn(name ="courses_id"),
             inverseJoinColumns = @JoinColumn(name="users_id")
     )
-    private List<Users> course_students;
+    private List<Users> course_students = new ArrayList<>();
 }

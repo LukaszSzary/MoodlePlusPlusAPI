@@ -30,4 +30,11 @@ public class RoleModerationService {
         repo.save(user);
         return true;
     }
+
+    public Boolean blockUser(String mail) throws Exception {
+        Users user = repo.findByMail(mail).orElseThrow(()->new UsernameNotFoundException("User not found."));
+        user.setRole(Role.blocked);
+        repo.save(user);
+        return true;
+    }
 }

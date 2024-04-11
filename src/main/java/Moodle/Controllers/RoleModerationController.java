@@ -47,4 +47,14 @@ public class RoleModerationController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/block/user")
+    public ResponseEntity<String> blockUser(@RequestBody String mail){
+        try {
+            service.blockUser(mail);
+            return ResponseEntity.ok("User blocked");
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

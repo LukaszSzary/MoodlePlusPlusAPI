@@ -2,6 +2,7 @@ package Moodle.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,13 +21,13 @@ public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-    @NotNull
+    @NotEmpty
     private String name;
-    @NotNull
+    @NotEmpty
     private String surname;
-    @NotNull
+    @NotEmpty
     private String mail;
-    @NotNull
+    @NotEmpty
     @JsonIgnore
     private String password;
     @NotNull

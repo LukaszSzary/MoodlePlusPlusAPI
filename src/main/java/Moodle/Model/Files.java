@@ -1,6 +1,7 @@
 package Moodle.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -12,11 +13,11 @@ public class Files {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-    @NotNull
+    @NotEmpty
     private String name;
-    @NotNull
+    @NotEmpty
     private String extension;
-    @NotNull
+    @NotEmpty
     private Integer volume;
     @NotNull
     private Date date_of_upload;

@@ -2,6 +2,7 @@ package Moodle.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -16,7 +17,7 @@ public class Courses {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-    @NotNull
+    @NotEmpty
     private String title;
 
     @OneToMany(mappedBy = "course", orphanRemoval = true)

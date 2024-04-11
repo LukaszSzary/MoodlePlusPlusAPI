@@ -6,10 +6,12 @@ import Moodle.Repositories.UsersRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class RoleModerationService {
+public class ModerationService {
     private final UsersRepository repo;
-    RoleModerationService(UsersRepository repo){
+    ModerationService(UsersRepository repo){
         this.repo=repo;
     }
     public Boolean giveAdminRole(String mail) throws Exception{
@@ -36,5 +38,14 @@ public class RoleModerationService {
         user.setRole(Role.blocked);
         repo.save(user);
         return true;
+    }
+
+    public List<Users> getAllUsers() {
+        return repo.findAll();
+    }
+
+    public void deleteUser(int id) throws Exception{
+        Users user = repo.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found."));
+        repo.delete(user);
     }
 }

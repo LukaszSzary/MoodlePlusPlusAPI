@@ -1,19 +1,19 @@
 package Moodle.Controllers;
 
-import Moodle.Services.JwtService;
-import Moodle.Services.RoleModerationService;
-import Moodle.Services.UserDetailsServiceImp;
-import lombok.NoArgsConstructor;
+import Moodle.Services.ModerationService;
+import Moodle.Model.Users;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @PreAuthorize("hasAuthority('admin')")
-public class RoleModerationController {
-    private final RoleModerationService service;
-    RoleModerationController(RoleModerationService service){
+public class ModerationController {
+    private final ModerationService service;
+    ModerationController(ModerationService service){
         this.service=service;
     }
 
@@ -55,6 +55,20 @@ public class RoleModerationController {
         }
         catch (Exception e){
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/get/all/users")
+    public ResponseEntity<List<Users>> getUsers(){
+        return ResponseEntity.ok(service.getAllUsers());
+    }
+    @DeleteMapping("/delete/user/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int id){
+        try {
+            service.deleteUser(id);
+            return ResponseEntity.ok("User deleted");
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
         }
     }
 }

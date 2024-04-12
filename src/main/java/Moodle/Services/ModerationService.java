@@ -35,7 +35,7 @@ public class ModerationService {
 
     public Boolean blockUser(String mail) throws Exception {
         Users user = repo.findByMail(mail).orElseThrow(()->new UsernameNotFoundException("User not found."));
-        user.setRole(Role.blocked);
+        user.setIsAccountBlocked(true);
         repo.save(user);
         return true;
     }

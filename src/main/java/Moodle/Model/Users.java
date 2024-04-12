@@ -32,6 +32,8 @@ public class Users implements UserDetails {
     private String password;
     @NotNull
     private Role role;
+    @NotNull
+    private Boolean isAccountBlocked;
 
     @ManyToMany(mappedBy = "course_owners",cascade = CascadeType.PERSIST)
     @JsonIgnore
@@ -60,7 +62,7 @@ public class Users implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
-        return true;
+        return !this.isAccountBlocked;
     }
 
     @Override

@@ -39,7 +39,7 @@ public class AuthenticationService {
         newUser.setSurname(user.getSurname());
         newUser.setRole(Role.student);
         newUser.setPassword(encoder.encode(user.getPassword()));
-
+        newUser.setIsAccountBlocked(false);
         repository.save(newUser);
     }
     public String loginUser(LoginDto request){

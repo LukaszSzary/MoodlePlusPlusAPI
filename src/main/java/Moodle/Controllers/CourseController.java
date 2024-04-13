@@ -71,4 +71,17 @@ public class CourseController {
             return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/{id}/add/student")
+    public ResponseEntity<Object> addStudentToCourse(@PathVariable int id, @RequestBody @Valid Users user,@CurrentSecurityContext(expression = "authentication")
+    Authentication authentication){
+        try {
+            if(courseService.addStudentToCourse(id, user, controllerService.getAuthenticatedUser(authentication))){
+                return ResponseEntity.ok("user added as owner");
+            }
+            return new ResponseEntity<>("Unknown error",HttpStatus.I_AM_A_TEAPOT);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
+    }
 }

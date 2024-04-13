@@ -2,6 +2,7 @@ package Moodle.Controllers;
 
 import Moodle.Dto.CourseDto;
 import Moodle.Model.Courses;
+import Moodle.Model.Users;
 import Moodle.Services.ControllerService;
 import Moodle.Services.CourseService;
 import jakarta.validation.Valid;
@@ -56,6 +57,18 @@ public class CourseController {
         catch (Exception e){
             return new ResponseEntity<>(e.toString(),HttpStatus.I_AM_A_TEAPOT);
         }
-        //return ResponseEntity.ok(courseService.deleteCourse(id,controllerService.getAuthenticatedUser(authentication)));
+    }
+    @PostMapping("/{id}/add/tutor")
+    public ResponseEntity<Object> addTutorToCourse(@PathVariable int id, @RequestBody @Valid Users user,@CurrentSecurityContext(expression = "authentication")
+    Authentication authentication){
+        try {
+            if(courseService.addTutorToCourse(id, user, controllerService.getAuthenticatedUser(authentication))){
+                return ResponseEntity.ok("user added as owner");
+            }
+            return new ResponseEntity<>("Unknown error",HttpStatus.I_AM_A_TEAPOT);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -2,9 +2,11 @@ package Moodle.Services;
 
 import Moodle.Dto.CourseDto;
 import Moodle.Model.Courses;
+import Moodle.Model.Role;
 import Moodle.Model.Users;
 import Moodle.Repositories.CoursesRepository;
 import Moodle.Repositories.UsersRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -47,5 +49,22 @@ public class CourseService {
             return true;
         }
         return false;
+    }
+
+    public boolean addTutorToCourse(int id, Users user, Users authenticatedUser) throws Exception {
+        Courses course = coursesRepository.findById(id).orElseThrow(()->new Exception("Course with provided id can't be found"));
+
+        if(!(course.getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole()== Role.admin)){
+            throw new Exception("Privileges not sufficient");
+        }
+
+        if(usersRepository.existsByIdAndNameAndSurnameAndMail(user.getId(), user.getName(), user.getSurname(), user.getMail()) && (user.getRole()==Role.tutor || user.getRole()==Role.admin)){
+            course.getCourse_owners().add(user);
+            coursesRepository.save(course);
+            return true;
+        }
+        else {
+            throw new Exception("User does not exist or is nighter admin nor tutor");
+        }
     }
 }

@@ -3,6 +3,7 @@ package Moodle.Services;
 import Moodle.Model.Role;
 import Moodle.Model.Users;
 import Moodle.Repositories.UsersRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,12 @@ public class ModerationService {
         repo.save(user);
         return true;
     }
+    public Boolean unBlockUser(String mail) throws Exception {
+        Users user = repo.findByMail(mail).orElseThrow(()->new UsernameNotFoundException("User not found."));
+        user.setIsAccountBlocked(false);
+        repo.save(user);
+        return true;
+    }
 
     public List<Users> getAllUsers() {
         return repo.findAll();
@@ -47,5 +54,9 @@ public class ModerationService {
     public void deleteUser(int id) throws Exception{
         Users user = repo.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found."));
         repo.delete(user);
+    }
+
+    public Users getUser(int id) throws Exception{
+        return repo.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found."));
     }
 }

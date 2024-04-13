@@ -57,9 +57,28 @@ public class ModerationController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/unblock/user")
+    public ResponseEntity<String> unBlockUser(@RequestBody String mail){
+        try {
+            service.unBlockUser(mail);
+            return ResponseEntity.ok("User unblocked");
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+        }
+    }
     @GetMapping("/get/all/users")
     public ResponseEntity<List<Users>> getUsers(){
         return ResponseEntity.ok(service.getAllUsers());
+    }
+    @GetMapping("/get/user/{id}")
+    public ResponseEntity<Object> getUser(@PathVariable int id){
+        try {
+            return ResponseEntity.ok( service.getUser(id));
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
     }
     @DeleteMapping("/delete/user/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable int id){

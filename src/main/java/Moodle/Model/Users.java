@@ -27,7 +27,7 @@ public class Users implements UserDetails {
     private String surname;
     @NotEmpty
     private String mail;
-    @NotEmpty
+
     @JsonIgnore
     private String password;
     @NotNull

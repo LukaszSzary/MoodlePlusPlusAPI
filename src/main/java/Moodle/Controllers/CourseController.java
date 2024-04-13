@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
 @RequestMapping("/course")
 public class CourseController {
     private final CourseService courseService;
@@ -28,13 +27,13 @@ public class CourseController {
         this.courseService = courseService;
         this.controllerService = controllerService;
     }
-
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @PostMapping("/add")
     public ResponseEntity<Courses> add(@RequestBody @Valid CourseDto courseDto, @CurrentSecurityContext(expression = "authentication")
                                            Authentication authentication){
         return ResponseEntity.ok(courseService.addCourse(courseDto,controllerService.getAuthenticatedUser(authentication)));
     }
-
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @PostMapping("/update")
     public Object update(@RequestBody @Valid Courses course, @CurrentSecurityContext(expression = "authentication")
                                             Authentication authentication){
@@ -46,6 +45,7 @@ public class CourseController {
         }
 
     }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @DeleteMapping("/delete/{id}")
     public Object deltete(@PathVariable int id,@CurrentSecurityContext(expression = "authentication")
                                               Authentication authentication){
@@ -61,6 +61,7 @@ public class CourseController {
             return new ResponseEntity<>(e.toString(),HttpStatus.I_AM_A_TEAPOT);
         }
     }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @PostMapping("/{id}/add/tutor")
     public ResponseEntity<Object> addTutorToCourse(@PathVariable int id, @RequestBody @Valid Users user,@CurrentSecurityContext(expression = "authentication")
     Authentication authentication){
@@ -74,6 +75,7 @@ public class CourseController {
             return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
         }
     }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @PostMapping("/{id}/add/student")
     public ResponseEntity<Object> addStudentToCourse(@PathVariable int id, @RequestBody @Valid Users user,@CurrentSecurityContext(expression = "authentication")
     Authentication authentication){

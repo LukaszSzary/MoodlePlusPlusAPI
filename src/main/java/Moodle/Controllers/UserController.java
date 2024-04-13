@@ -1,6 +1,6 @@
 package Moodle.Controllers;
 
-import Moodle.Services.ModerationService;
+import Moodle.Services.UserService;
 import Moodle.Model.Users;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +11,9 @@ import java.util.List;
 
 @RestController
 @PreAuthorize("hasAuthority('admin')")
-public class ModerationController {
-    private final ModerationService service;
-    ModerationController(ModerationService service){
+public class UserController {
+    private final UserService service;
+    UserController(UserService service){
         this.service=service;
     }
 

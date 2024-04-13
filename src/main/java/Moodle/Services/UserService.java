@@ -3,16 +3,15 @@ package Moodle.Services;
 import Moodle.Model.Role;
 import Moodle.Model.Users;
 import Moodle.Repositories.UsersRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ModerationService {
+public class UserService {
     private final UsersRepository repo;
-    ModerationService(UsersRepository repo){
+    UserService(UsersRepository repo){
         this.repo=repo;
     }
     public Boolean giveAdminRole(String mail) throws Exception{

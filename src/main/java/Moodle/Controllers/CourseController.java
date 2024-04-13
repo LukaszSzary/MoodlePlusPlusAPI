@@ -1,6 +1,7 @@
 package Moodle.Controllers;
 
 import Moodle.Dto.CourseDto;
+import Moodle.Dto.CourseIdTitleDto;
 import Moodle.Model.Courses;
 import Moodle.Model.Users;
 import Moodle.Services.ControllerService;
@@ -13,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
@@ -83,5 +86,24 @@ public class CourseController {
         catch (Exception e){
             return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
         }
+    }
+    @GetMapping("/get/all/courses")
+    public ResponseEntity<List<CourseIdTitleDto>> getAllCourses(){
+        return ResponseEntity.ok(courseService.getAllCourses());
+    }
+    @GetMapping("/get/course/details/{id}")
+    public ResponseEntity<Object> getCourse(@PathVariable int id){
+        try {
+            return ResponseEntity.ok(courseService.getCourse(id));
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.toString(),HttpStatus.NO_CONTENT);
+        }
+
+    }
+    @GetMapping("/get/user/courses")
+    public ResponseEntity<List<CourseIdTitleDto>> getAllUserCourses(@CurrentSecurityContext(expression = "authentication")
+    Authentication authentication){
+        return ResponseEntity.ok(courseService.getAllUserCourses(controllerService.getAuthenticatedUser(authentication)));
     }
 }

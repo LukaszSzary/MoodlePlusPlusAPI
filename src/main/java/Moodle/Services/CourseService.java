@@ -1,6 +1,7 @@
 package Moodle.Services;
 
 import Moodle.Dto.CourseDto;
+import Moodle.Dto.CourseIdTitleDto;
 import Moodle.Model.Courses;
 import Moodle.Model.Role;
 import Moodle.Model.Users;
@@ -9,6 +10,8 @@ import Moodle.Repositories.UsersRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,5 +86,29 @@ public class CourseService {
         else {
             throw new Exception("User does not exist");
         }
+    }
+
+    public List<CourseIdTitleDto> getAllCourses() {
+        List<Courses> courses = coursesRepository.findAll();
+        List<CourseIdTitleDto> outputCourses = new ArrayList<>();
+        for (Courses c:courses) {
+            outputCourses.add(new CourseIdTitleDto(c));
+        }
+        return outputCourses;
+    }
+
+    public Courses getCourse(int id) throws Exception{
+        return coursesRepository.findById(id).orElseThrow(()->new Exception("There is no course with this id"));
+    }
+
+    public List<CourseIdTitleDto> getAllUserCourses(Users user) {
+        List<Courses> courses = coursesRepository.findAll();
+        List<CourseIdTitleDto> outputCourses = new ArrayList<>();
+        for (Courses c:courses) {
+            if(c.getCourse_students().contains(user) || c.getCourse_owners().contains(user)) {
+                outputCourses.add(new CourseIdTitleDto(c));
+            }
+        }
+        return outputCourses;
     }
 }

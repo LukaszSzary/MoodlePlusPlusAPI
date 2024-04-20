@@ -33,7 +33,7 @@ public class CourseService {
     }
 
     public Courses updateCourse(Courses course, Users authenticatedUser) throws Exception {
-        Courses courseUpdated = coursesRepository.findById(course.getId()).get();
+        Courses courseUpdated = coursesRepository.findById(course.getId()).orElseThrow(()->new Exception("There is no such course"));
         if(courseUpdated==null){
             throw new NullPointerException("There is no such course, bad id");
         }

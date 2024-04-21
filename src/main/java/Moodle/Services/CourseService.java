@@ -70,6 +70,21 @@ public class CourseService {
             throw new Exception("User does not exist or is nighter admin nor tutor");
         }
     }
+    public boolean removeTutorFromCourse(int courseId, int userId, Users authenticatedUser) throws Exception {
+        Courses course = coursesRepository.findById(courseId).orElseThrow(()->new Exception("Course with provided id can't be found"));
+
+        if(!(course.getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole()== Role.admin)){
+            throw new Exception("Privileges not sufficient");
+        }
+
+        Users user = usersRepository.findById(userId).orElseThrow(()->new Exception("User does not exist"));
+        if(course.getCourse_owners().contains(user)){
+            course.getCourse_owners().remove(user);
+            coursesRepository.save(course);
+        }
+
+        return true;
+    }
 
     public boolean addStudentToCourse(int id, Users user, Users authenticatedUser) throws Exception {
         Courses course = coursesRepository.findById(id).orElseThrow(()->new Exception("Course with provided id can't be found"));
@@ -86,6 +101,22 @@ public class CourseService {
         else {
             throw new Exception("User does not exist");
         }
+    }
+    public boolean removeStudentFromCourse(int courseId, int userId, Users authenticatedUser) throws Exception {
+        Courses course = coursesRepository.findById(courseId).orElseThrow(()->new Exception("Course with provided id can't be found"));
+
+        if(!(course.getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole()== Role.admin)){
+            throw new Exception("You have to be course owner or admin");
+        }
+
+        Users user = usersRepository.findById(userId).orElseThrow(()->new Exception("User does not exist"));
+        if(course.getCourse_students().contains(user)){
+            course.getCourse_students().remove(user);
+            coursesRepository.save(course);
+        }
+
+        return true;
+
     }
 
     public List<CourseIdTitleDto> getAllCourses() {

@@ -47,7 +47,7 @@ public class CourseController {
     }
     @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @DeleteMapping("/delete/{id}")
-    public Object deltete(@PathVariable int id,@CurrentSecurityContext(expression = "authentication")
+    public Object delete(@PathVariable int id,@CurrentSecurityContext(expression = "authentication")
                                               Authentication authentication){
         try {
             if(courseService.deleteCourse(id, controllerService.getAuthenticatedUser(authentication))){
@@ -68,6 +68,34 @@ public class CourseController {
         try {
             if(courseService.addTutorToCourse(id, user, controllerService.getAuthenticatedUser(authentication))){
                 return ResponseEntity.ok("user added as owner");
+            }
+            return new ResponseEntity<>("Unknown error",HttpStatus.I_AM_A_TEAPOT);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
+    @PostMapping("/remove/tutor/{tutorId}/from/course/{courseId}")
+    public ResponseEntity<Object> removeTutorFromCourse(@PathVariable int tutorId, @PathVariable int courseId ,@CurrentSecurityContext(expression = "authentication")
+    Authentication authentication){
+        try {
+            if(courseService.removeTutorFromCourse(tutorId, courseId, controllerService.getAuthenticatedUser(authentication))){
+                return ResponseEntity.ok("Tutor deleted");
+            }
+            return new ResponseEntity<>("Unknown error",HttpStatus.I_AM_A_TEAPOT);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
+    @PostMapping("/remove/student/{tutorId}/from/course/{courseId}")
+    public ResponseEntity<Object> removeStudentFromCourse(@PathVariable int tutorId, @PathVariable int courseId ,@CurrentSecurityContext(expression = "authentication")
+    Authentication authentication){
+        try {
+            if(courseService.removeStudentFromCourse(tutorId, courseId, controllerService.getAuthenticatedUser(authentication))){
+                return ResponseEntity.ok("Student deleted");
             }
             return new ResponseEntity<>("Unknown error",HttpStatus.I_AM_A_TEAPOT);
         }

@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 public class Courses {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @NotEmpty
     private String title;

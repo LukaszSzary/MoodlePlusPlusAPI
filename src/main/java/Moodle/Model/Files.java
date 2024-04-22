@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 public class Files {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @NotEmpty
     private String name;
@@ -27,4 +27,9 @@ public class Files {
     @JsonIgnore
     @JoinColumn(name = "task_id",nullable = false)
     private Tasks task;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "user_id",nullable = false)
+    private Users user;
 }

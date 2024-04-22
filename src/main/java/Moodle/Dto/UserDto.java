@@ -10,7 +10,7 @@ public class UserDto {
     private String name;
     @NotEmpty(message = "The surname is required.")
     private String surname;
-    @NotEmpty(message = "The  mail is required.")
+    @NotEmpty(message = "The mail is required.")
     private String mail;
     @NotEmpty(message = "The password is required.")
     private String password;

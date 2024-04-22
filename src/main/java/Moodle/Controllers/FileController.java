@@ -1,25 +1,25 @@
 package Moodle.Controllers;
 
 import Moodle.Services.ControllerService;
-import Moodle.Services.FileStorageService;
+import Moodle.Services.FileService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class FileController {
-    private final FileStorageService fileService;
+    private final FileService fileService;
     private final ControllerService controllerService;
 
-    public FileController(FileStorageService fileService, ControllerService controllerService) {
+    public FileController(FileService fileService, ControllerService controllerService) {
         this.fileService = fileService;
         this.controllerService = controllerService;
     }
 
-    @GetMapping("/files")
-    public ResponseEntity files(){
+    @PostMapping("/save/file")
+    public ResponseEntity saveFile(@RequestParam("file") MultipartFile file){
         try {
-            fileService.test();
+            fileService.saveFile(file,202);
         }
         catch (Exception e){
             return ResponseEntity.ok(e.toString());

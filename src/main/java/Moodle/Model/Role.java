@@ -1,3 +1,3 @@
 package Moodle.Model;
 
-public enum Role { student, tutor, admin,blocked}
+public enum Role { student, tutor, admin}

@@ -31,12 +31,11 @@ public class TaskService {
         Tasks task = new Tasks();
         task.setTitle(taskDto.getTitle());
         task.setContents(taskDto.getContents());
-        task.setNumber_of_files(taskDto.getNumber_of_files());
         task.setMin_total_files_volume(taskDto.getMin_total_files_volume());
         task.setMax_total_files_volume(taskDto.getMax_total_files_volume());
         task.setDate_of_start(taskDto.getDate_of_start());
         task.setDate_of_end(taskDto.getDate_of_end());
-        task.setAvailable_file_extensions(taskDto.getAvailable_file_extensions());
+        task.setAvailable_file_extensions(taskDto.getAvailable_file_extensions().toLowerCase().trim());
         task.setCourse(course);
         Files.createDirectory(Paths.get(storageProperties.getRootLocation()+ File.separator+course.getTitle()+ File.separator+task.getTitle()));
         tasksRepository.save(task);
@@ -70,14 +69,14 @@ public class TaskService {
                 Paths.get(storageProperties.getRootLocation()+File.separator+taskToUpdate.getCourse().getTitle()+File.separator+task.getTitle()));
 
         taskToUpdate.setTitle(task.getTitle());
-        taskToUpdate.setContents(task.getContents());
-        taskToUpdate.setNumber_of_files(task.getNumber_of_files());
         taskToUpdate.setMin_total_files_volume(task.getMin_total_files_volume());
         taskToUpdate.setMax_total_files_volume(task.getMax_total_files_volume());
         taskToUpdate.setDate_of_start(task.getDate_of_start());
         taskToUpdate.setDate_of_end(task.getDate_of_end());
-        taskToUpdate.setAvailable_file_extensions(task.getAvailable_file_extensions());
-               tasksRepository.save(taskToUpdate);
+        taskToUpdate.setAvailable_file_extensions(task.getAvailable_file_extensions().toLowerCase().trim());
+        tasksRepository.save(taskToUpdate);
         return taskToUpdate;
     }
+
+
 }

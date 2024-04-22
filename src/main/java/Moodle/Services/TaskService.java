@@ -6,20 +6,24 @@ import Moodle.Model.Tasks;
 import Moodle.Model.Users;
 import Moodle.Repositories.CoursesRepository;
 import Moodle.Repositories.TasksRepository;
-import Moodle.Repositories.UsersRepository;
+import Moodle.Security.StorageProperties;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Service
 public class TaskService {
     private final TasksRepository tasksRepository;
     private final CoursesRepository coursesRepository;
+    private final StorageProperties storageProperties;
 
-    public TaskService(TasksRepository tasksRepository, CoursesRepository coursesRepository) {
+    public TaskService(TasksRepository tasksRepository, CoursesRepository coursesRepository, StorageProperties storageProperties) {
         this.tasksRepository = tasksRepository;
         this.coursesRepository = coursesRepository;
+        this.storageProperties = storageProperties;
     }
 
     public Tasks addTask(TaskDto taskDto, int courseId) throws  Exception{
@@ -34,6 +38,7 @@ public class TaskService {
         task.setDate_of_end(taskDto.getDate_of_end());
         task.setAvailable_file_extensions(taskDto.getAvailable_file_extensions());
         task.setCourse(course);
+        Files.createDirectory(Paths.get(storageProperties.getRootLocation()+ File.separator+course.getTitle()+ File.separator+task.getTitle()));
         tasksRepository.save(task);
         return task;
     }
@@ -61,6 +66,9 @@ public class TaskService {
         if(!taskToUpdate.getCourse().getCourse_owners().contains(authenticatedUser)){
             throw new Exception("You are not the owner of course that contains this task");
         }
+        Files.move(Paths.get(storageProperties.getRootLocation()+File.separator+taskToUpdate.getCourse().getTitle()+File.separator+taskToUpdate.getTitle()),
+                Paths.get(storageProperties.getRootLocation()+File.separator+taskToUpdate.getCourse().getTitle()+File.separator+task.getTitle()));
+
         taskToUpdate.setTitle(task.getTitle());
         taskToUpdate.setContents(task.getContents());
         taskToUpdate.setNumber_of_files(task.getNumber_of_files());
@@ -69,7 +77,7 @@ public class TaskService {
         taskToUpdate.setDate_of_start(task.getDate_of_start());
         taskToUpdate.setDate_of_end(task.getDate_of_end());
         taskToUpdate.setAvailable_file_extensions(task.getAvailable_file_extensions());
-        tasksRepository.save(taskToUpdate);
+               tasksRepository.save(taskToUpdate);
         return taskToUpdate;
     }
 }

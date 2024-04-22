@@ -29,9 +29,14 @@ public class CourseController {
     }
     @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @PostMapping("/add")
-    public ResponseEntity<Courses> add(@RequestBody @Valid CourseDto courseDto, @CurrentSecurityContext(expression = "authentication")
+    public ResponseEntity<Object> add(@RequestBody @Valid CourseDto courseDto, @CurrentSecurityContext(expression = "authentication")
                                            Authentication authentication){
-        return ResponseEntity.ok(courseService.addCourse(courseDto,controllerService.getAuthenticatedUser(authentication)));
+        try {
+            return ResponseEntity.ok(courseService.addCourse(courseDto, controllerService.getAuthenticatedUser(authentication)));
+        }
+        catch (Exception e){
+            return  new ResponseEntity<>(e.toString(),HttpStatus.FAILED_DEPENDENCY);
+        }
     }
     @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @PostMapping("/update")
@@ -76,7 +81,7 @@ public class CourseController {
         }
     }
     @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
-    @PostMapping("/remove/tutor/{tutorId}/from/course/{courseId}")
+    @DeleteMapping("/remove/tutor/{tutorId}/from/course/{courseId}")
     public ResponseEntity<Object> removeTutorFromCourse(@PathVariable int tutorId, @PathVariable int courseId ,@CurrentSecurityContext(expression = "authentication")
     Authentication authentication){
         try {
@@ -90,7 +95,7 @@ public class CourseController {
         }
     }
     @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
-    @PostMapping("/remove/student/{tutorId}/from/course/{courseId}")
+    @DeleteMapping("/remove/student/{tutorId}/from/course/{courseId}")
     public ResponseEntity<Object> removeStudentFromCourse(@PathVariable int tutorId, @PathVariable int courseId ,@CurrentSecurityContext(expression = "authentication")
     Authentication authentication){
         try {

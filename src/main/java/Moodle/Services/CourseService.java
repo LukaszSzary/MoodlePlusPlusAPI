@@ -7,27 +7,33 @@ import Moodle.Model.Role;
 import Moodle.Model.Users;
 import Moodle.Repositories.CoursesRepository;
 import Moodle.Repositories.UsersRepository;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import Moodle.Security.StorageProperties;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CourseService {
     private final CoursesRepository coursesRepository;
     private final UsersRepository usersRepository;
+    private final StorageProperties storageProperties;
 
-    public CourseService(CoursesRepository repository, UsersRepository usersRepository) {
+    public CourseService(CoursesRepository repository, UsersRepository usersRepository, StorageProperties storageProperties) {
         this.coursesRepository = repository;
         this.usersRepository = usersRepository;
+        this.storageProperties = storageProperties;
     }
-    public Courses addCourse(CourseDto courseDto, Users user){
+    public Courses addCourse(CourseDto courseDto, Users user) throws Exception{
 
         Courses course =new Courses();
         course.setTitle(courseDto.getTitle());
         course.getCourse_owners().add(user);
+        Files.createDirectory(Paths.get(storageProperties.getRootLocation()+File.separator+courseDto.getTitle()));
         coursesRepository.save(course);
         return course;
     }
@@ -41,12 +47,14 @@ public class CourseService {
         if(!courseUpdated.getCourse_owners().contains(authenticatedUser)){
             throw new Exception("This user can not change this course");
        }
+        Files.move(Paths.get(storageProperties.getRootLocation()+File.separator+courseUpdated.getTitle()),Paths.get(storageProperties.getRootLocation()+File.separator+course.getTitle()));
         courseUpdated.setTitle(course.getTitle());
+
         coursesRepository.save(courseUpdated);
         return courseUpdated;
     }
 
-    public boolean deleteCourse(int id, Users authenticatedUser) {
+    public boolean deleteCourse(int id, Users authenticatedUser) throws Exception {
         if(coursesRepository.findById(id).get().getCourse_owners().contains(authenticatedUser)){
             coursesRepository.deleteById(id);
             return true;

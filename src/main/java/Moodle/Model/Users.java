@@ -40,7 +40,7 @@ public class Users implements UserDetails {
     @JsonIgnore
     private List<Courses> courses_joined;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Files> files = new ArrayList<>();
     @Override
     @JsonIgnore

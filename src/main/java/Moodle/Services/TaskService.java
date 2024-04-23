@@ -31,7 +31,6 @@ public class TaskService {
         Tasks task = new Tasks();
         task.setTitle(taskDto.getTitle());
         task.setContents(taskDto.getContents());
-        task.setMin_total_files_volume(taskDto.getMin_total_files_volume());
         task.setMax_total_files_volume(taskDto.getMax_total_files_volume());
         task.setDate_of_start(taskDto.getDate_of_start());
         task.setDate_of_end(taskDto.getDate_of_end());
@@ -69,7 +68,6 @@ public class TaskService {
                 Paths.get(storageProperties.getRootLocation()+File.separator+taskToUpdate.getCourse().getTitle()+File.separator+task.getTitle()));
 
         taskToUpdate.setTitle(task.getTitle());
-        taskToUpdate.setMin_total_files_volume(task.getMin_total_files_volume());
         taskToUpdate.setMax_total_files_volume(task.getMax_total_files_volume());
         taskToUpdate.setDate_of_start(task.getDate_of_start());
         taskToUpdate.setDate_of_end(task.getDate_of_end());

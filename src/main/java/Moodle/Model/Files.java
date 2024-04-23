@@ -1,12 +1,13 @@
 package Moodle.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -18,11 +19,10 @@ public class Files {
     private String name;
     @NotEmpty
     private String extension;
-    @NotEmpty
+    @NotNull
     private Integer volume;
     @NotNull
-    private Date date_of_upload;
-
+    private LocalDate date_of_upload;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "task_id",nullable = false)

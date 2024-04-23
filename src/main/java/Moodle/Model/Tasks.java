@@ -18,7 +18,6 @@ public class Tasks {
     @NotEmpty
     private String title;
     private String contents;
-    private Integer min_total_files_volume;
     @NotNull
     private Integer max_total_files_volume;
     @NotNull

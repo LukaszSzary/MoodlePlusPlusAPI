@@ -2,12 +2,20 @@ package Moodle.Controllers;
 
 import Moodle.Services.ControllerService;
 import Moodle.Services.FileService;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 @RestController
 public class FileController {
@@ -51,6 +59,46 @@ public class FileController {
         }
         catch (Exception e ){
             return new ResponseEntity<String>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
+    @GetMapping("/download/course/{id}/files")
+    public ResponseEntity<?> downloadCourseFiles(@PathVariable int id, @CurrentSecurityContext(expression = "authentication")
+    Authentication authentication) {
+        try {
+            File zipFile = fileService.downloadCourse(id, controllerService.getAuthenticatedUser(authentication));
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(zipFile));
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=" + zipFile.getName());
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(zipFile.length())
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .body(resource);
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.toString(),HttpStatus.NO_CONTENT);
+        }
+    }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
+    @GetMapping("/download/task/{id}/files")
+    public ResponseEntity<?> downloadTaskFiles(@PathVariable int id, @CurrentSecurityContext(expression = "authentication")
+    Authentication authentication) {
+        try {
+            File zipFile = fileService.downloadTask(id, controllerService.getAuthenticatedUser(authentication));
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(zipFile));
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-Disposition", "attachment; filename=" + zipFile.getName());
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(zipFile.length())
+                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .body(resource);
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.toString(),HttpStatus.NO_CONTENT);
         }
     }
 }

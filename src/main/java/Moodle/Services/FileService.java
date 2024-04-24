@@ -1,36 +1,39 @@
 package Moodle.Services;
 
-import Moodle.Model.Files;
-import Moodle.Model.Tasks;
-import Moodle.Model.Users;
+import Moodle.Model.*;
+import Moodle.Repositories.CoursesRepository;
 import Moodle.Repositories.FilesRepository;
 import Moodle.Repositories.TasksRepository;
 import Moodle.Security.StorageProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.text.spi.DateFormatProvider;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class FileService {
     private final Path rootPath;
     private final TasksRepository tasksRepository;
     private final FilesRepository filesRepository;
-    public FileService(StorageProperties properties, TasksRepository tasksRepository, FilesRepository filesRepository){
+    private final CoursesRepository coursesRepository;
+    public FileService(StorageProperties properties, TasksRepository tasksRepository, FilesRepository filesRepository, CoursesRepository coursesRepository){
         this.rootPath= Paths.get(properties.getRootLocation());
         this.tasksRepository = tasksRepository;
         this.filesRepository = filesRepository;
+        this.coursesRepository = coursesRepository;
     }
 
     public Files saveFile(MultipartFile file, int taskId, Users authenticatedUser) throws Exception{
@@ -101,4 +104,61 @@ public class FileService {
         }
         return false;
     }
+    public File downloadCourse(int id, Users authenticatedUser) throws Exception {
+        Courses course = coursesRepository.findById(id).orElseThrow(() -> new Exception("Course not found"));
+        if (!(course.getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole().equals(Role.admin))) {
+            throw new Exception("You have no right to download it");
+        }
+        String pathToFolder = rootPath + File.separator + course.getTitle();
+        String pathToZipFolder = rootPath + File.separator + course.getTitle() + ".zip";
+        zipFolder(pathToFolder, pathToZipFolder);
+        return new File(pathToZipFolder);
+    }
+    public File downloadTask(int id, Users authenticatedUser) throws Exception {
+        Tasks tasks = tasksRepository.findById(id).orElseThrow(() -> new Exception("Task not found"));
+        if (!(tasks.getCourse().getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole().equals(Role.admin))) {
+            throw new Exception("You have no right to download it");
+        }
+        String pathToFolder = rootPath + File.separator + tasks.getCourse().getTitle() + File.separator + tasks.getTitle();
+        String pathToZipFolder = rootPath + File.separator + tasks.getTitle() + ".zip";
+        zipFolder(pathToFolder, pathToZipFolder);
+        return new File(pathToZipFolder);
+    }
+    private static void zipFolder(String sourceFolder, String zipFilePath) throws IOException {
+        FileOutputStream fos = new FileOutputStream(zipFilePath);
+        ZipOutputStream zos = new ZipOutputStream(fos);
+        File folder = new File(sourceFolder);
+        zipFile(folder, folder.getName(), zos);
+        zos.close();
+        fos.close();
+    }
+    private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+        if (fileToZip.isHidden()) {
+            return;
+        }
+        if (fileToZip.isDirectory()) {
+            if (fileName.endsWith("/")) {
+                zipOut.putNextEntry(new ZipEntry(fileName));
+                zipOut.closeEntry();
+            } else {
+                zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+                zipOut.closeEntry();
+            }
+            File[] children = fileToZip.listFiles();
+            for (File childFile : children) {
+                zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+            }
+            return;
+        }
+        FileInputStream fis = new FileInputStream(fileToZip);
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zipOut.putNextEntry(zipEntry);
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zipOut.write(bytes, 0, length);
+        }
+        fis.close();
+    }
+
 }

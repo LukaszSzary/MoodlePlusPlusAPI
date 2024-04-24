@@ -19,6 +19,8 @@ import java.text.spi.DateFormatProvider;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FileService {
@@ -82,5 +84,21 @@ public class FileService {
         java.nio.file.Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
 
         return newFile;
+    }
+    public List<Files> getUserFilesSubmittedForTask (int taskId, Users authenticatedUser) throws Exception{
+        Tasks task = tasksRepository.findById(taskId).orElseThrow(()->new Exception("No such task exist"));
+        return task.getFiles().stream().filter(e->e.getUser().equals(authenticatedUser)).collect(Collectors.toList());
+    }
+    public boolean deleteFile(int fileId, Users authenticatedUser) throws Exception{
+        Files file = filesRepository.findById(fileId).orElseThrow(()->new Exception("There is no such file"));
+        if(!file.getUser().equals(authenticatedUser)){
+            throw new Exception("This is not yours file, you can't delete it");
+        }
+        File fileOnDisc = new File(rootPath + File.separator + file.getTask().getCourse().getTitle() + File.separator + file.getTask().getTitle() + File.separator + file.getName());
+        if(fileOnDisc.delete()){
+            filesRepository.delete(file);
+            return true;
+        }
+        return false;
     }
 }

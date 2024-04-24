@@ -19,7 +19,7 @@ public class FileController {
         this.controllerService = controllerService;
     }
 
-    @PostMapping("/save/file/to/task/{id} ")
+    @PostMapping("/save/file/to/task/{id}")
     public ResponseEntity<?> saveFile(@RequestParam("file") MultipartFile file, @PathVariable int id,@CurrentSecurityContext(expression = "authentication")
                                     Authentication authentication) {
         try {
@@ -28,5 +28,29 @@ public class FileController {
        catch (Exception e){
            return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
        }
+    }
+    @GetMapping("/get/users/files/from/task/{id}")
+    public ResponseEntity<?> getFiles(@PathVariable int id, @CurrentSecurityContext(expression = "authentication")
+                                        Authentication authentication){
+        try{
+            return ResponseEntity.ok(fileService.getUserFilesSubmittedForTask(id,controllerService.getAuthenticatedUser(authentication)));
+        }
+        catch (Exception e ){
+            return new ResponseEntity<String>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/delete/file/{id}")
+    public ResponseEntity<?> deleteFile(@PathVariable int id, @CurrentSecurityContext(expression = "authentication")
+    Authentication authentication){
+        try{
+            if(fileService.deleteFile(id,controllerService.getAuthenticatedUser(authentication))){
+                return ResponseEntity.ok("Deleted");
+            }
+            return new ResponseEntity<>("Unknown error",HttpStatus.I_AM_A_TEAPOT);
+        }
+        catch (Exception e ){
+            return new ResponseEntity<String>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
     }
 }

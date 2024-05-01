@@ -71,12 +71,12 @@ public class UserController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
+
     @GetMapping("/get/all/users")
     public ResponseEntity<List<Users>> getUsers(){
         return ResponseEntity.ok(service.getAllUsers());
     }
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
+
     @GetMapping("/get/user/{id}")
     public ResponseEntity<Object> getUser(@PathVariable int id){
         try {

@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasAuthority('admin')")
+
 public class UserController {
     private final UserService service;
     UserController(UserService service){
         this.service=service;
     }
-
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/grant/student/role")
     public ResponseEntity<String> grantStudentRole(@RequestBody String mail ){
         try {
@@ -27,6 +27,7 @@ public class UserController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/grant/tutor/role")
     public ResponseEntity<String> grantTutorRole(@RequestBody String mail ){
         try {
@@ -37,6 +38,7 @@ public class UserController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/grant/admin/role")
     public ResponseEntity<String> grantAdminRole(@RequestBody String mail){
         try {
@@ -47,6 +49,7 @@ public class UserController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/block/user")
     public ResponseEntity<String> blockUser(@RequestBody String mail){
         try {
@@ -57,6 +60,7 @@ public class UserController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PreAuthorize("hasAuthority('admin')")
     @PostMapping("/unblock/user")
     public ResponseEntity<String> unBlockUser(@RequestBody String mail){
         try {
@@ -67,10 +71,12 @@ public class UserController {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @GetMapping("/get/all/users")
     public ResponseEntity<List<Users>> getUsers(){
         return ResponseEntity.ok(service.getAllUsers());
     }
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @GetMapping("/get/user/{id}")
     public ResponseEntity<Object> getUser(@PathVariable int id){
         try {
@@ -80,6 +86,7 @@ public class UserController {
             return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
         }
     }
+    @PreAuthorize("hasAuthority('admin')")
     @DeleteMapping("/delete/user/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable int id){
         try {

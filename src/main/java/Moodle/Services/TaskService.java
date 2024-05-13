@@ -75,6 +75,7 @@ public class TaskService {
                 Paths.get(storageProperties.getRootLocation()+File.separator+taskToUpdate.getCourse().getTitle()+File.separator+task.getTitle()));
 
         taskToUpdate.setTitle(task.getTitle());
+        taskToUpdate.setContents(task.getContents());
         taskToUpdate.setMax_total_files_amount(task.getMax_total_files_amount());
         taskToUpdate.setDate_of_start(task.getDate_of_start());
         taskToUpdate.setDate_of_end(task.getDate_of_end());

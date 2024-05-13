@@ -4,6 +4,7 @@ import Moodle.Dto.CourseDto;
 import Moodle.Dto.CourseIdTitleDto;
 import Moodle.Model.Courses;
 import Moodle.Model.Role;
+import Moodle.Model.Tasks;
 import Moodle.Model.Users;
 import Moodle.Repositories.CoursesRepository;
 import Moodle.Repositories.UsersRepository;
@@ -55,11 +56,16 @@ public class CourseService {
     }
 
     public boolean deleteCourse(int id, Users authenticatedUser) throws Exception {
-        if(coursesRepository.findById(id).get().getCourse_owners().contains(authenticatedUser)){
-            coursesRepository.deleteById(id);
-            return true;
+        Courses course = coursesRepository.findById(id).orElseThrow(()->new Exception("Task does not exists"));
+        if(!course.getCourse_owners().contains(authenticatedUser)){
+            throw new Exception("You are not the owner of course that contains this course");
         }
-        return false;
+        File courseDir = new File(storageProperties.getRootLocation()+File.separator+course.getTitle());
+
+        deleteContents(courseDir);
+
+        coursesRepository.delete(course);
+        return courseDir.delete();
     }
 
     public boolean addTutorToCourse(int id, Users user, Users authenticatedUser) throws Exception {
@@ -149,5 +155,15 @@ public class CourseService {
             }
         }
         return outputCourses;
+    }
+    private void deleteContents(File courseDir){
+        String[]entries = courseDir.list();
+        for(String s: entries){
+            File currentFile = new File(courseDir.getPath(),s);
+            if(currentFile.isDirectory()){
+                deleteContents(currentFile);
+            }
+            currentFile.delete();
+        }
     }
 }

@@ -19,7 +19,7 @@ public class Tasks {
     private String title;
     private String contents;
     @NotNull
-    private Integer max_total_files_volume;
+    private Integer max_total_files_amount;
     @NotNull
     private LocalDate date_of_start;
     private LocalDate date_of_end;

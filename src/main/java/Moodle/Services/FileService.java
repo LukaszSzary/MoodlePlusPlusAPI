@@ -62,7 +62,7 @@ public class FileService {
             }
         }
         //check if user can add another file
-        if(task.getMax_total_files_volume() == task.getFiles().stream().filter(n-> n.getUser().equals(authenticatedUser)).count()){
+        if(task.getMax_total_files_amount() == task.getFiles().stream().filter(n-> n.getUser().equals(authenticatedUser)).count()){
             throw new Exception("Max number of uploaded files reached");
         }
         //check naming if convention is preserved

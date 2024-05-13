@@ -31,7 +31,7 @@ public class TaskService {
         Tasks task = new Tasks();
         task.setTitle(taskDto.getTitle());
         task.setContents(taskDto.getContents());
-        task.setMax_total_files_volume(taskDto.getMax_total_files_volume());
+        task.setMax_total_files_amount(taskDto.getMax_total_files_volume());
         task.setDate_of_start(taskDto.getDate_of_start());
         task.setDate_of_end(taskDto.getDate_of_end());
         task.setAvailable_file_extensions(taskDto.getAvailable_file_extensions().toLowerCase().trim());
@@ -55,8 +55,15 @@ public class TaskService {
         if(!task.getCourse().getCourse_owners().contains(authenticatedUser)){
             throw new Exception("You are not the owner of course that contains this task");
         }
+        File taskDir = new File(storageProperties.getRootLocation()+File.separator+task.getCourse().getTitle()+File.separator+task.getTitle());
+        String[]entries = taskDir.list();
+        for(String s: entries){
+            File currentFile = new File(taskDir.getPath(),s);
+            currentFile.delete();
+        }
+
         tasksRepository.delete(task);
-        return true;
+        return taskDir.delete();
     }
 
     public Tasks updateTask(Tasks task ,Users authenticatedUser) throws Exception{
@@ -68,7 +75,7 @@ public class TaskService {
                 Paths.get(storageProperties.getRootLocation()+File.separator+taskToUpdate.getCourse().getTitle()+File.separator+task.getTitle()));
 
         taskToUpdate.setTitle(task.getTitle());
-        taskToUpdate.setMax_total_files_volume(task.getMax_total_files_volume());
+        taskToUpdate.setMax_total_files_amount(task.getMax_total_files_amount());
         taskToUpdate.setDate_of_start(task.getDate_of_start());
         taskToUpdate.setDate_of_end(task.getDate_of_end());
         taskToUpdate.setAvailable_file_extensions(task.getAvailable_file_extensions().toLowerCase().trim());

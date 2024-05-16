@@ -11,8 +11,8 @@ public class TaskDto {
     @NotEmpty(message = "The title is required.")
     private String title;
     private String contents;
-    @NotNull(message = "Max number of files can't be null")
-    private Integer max_total_files_volume;
+    @NotNull(message = "Max amount of files can't be null")
+    private Integer max_total_files_amount;
     @NotNull(message = "The date_of_start is required.")
     private LocalDate date_of_start;
     private LocalDate date_of_end;

@@ -31,7 +31,7 @@ public class TaskService {
         Tasks task = new Tasks();
         task.setTitle(taskDto.getTitle());
         task.setContents(taskDto.getContents());
-        task.setMax_total_files_amount(taskDto.getMax_total_files_volume());
+        task.setMax_total_files_amount(taskDto.getMax_total_files_amount());
         task.setDate_of_start(taskDto.getDate_of_start());
         task.setDate_of_end(taskDto.getDate_of_end());
         task.setAvailable_file_extensions(taskDto.getAvailable_file_extensions().toLowerCase().trim());

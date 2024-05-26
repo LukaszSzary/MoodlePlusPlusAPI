@@ -141,14 +141,14 @@ public class CourseService {
     }
 
     public List<Courses> getAllUserCourses(Users user) {
-        List<Courses> courses = coursesRepository.findAll().stream().filter(a->a.getCourse_students().contains(user)).toList();
+    //    List<Courses> courses =
 //        List<CourseIdTitleDto> outputCourses = new ArrayList<>();
 //        for (Courses c:courses) {
 //            if(c.getCourse_students().contains(user) || c.getCourse_owners().contains(user)) {
 //                outputCourses.add(new CourseIdTitleDto(c));
 //            }
 //        }
-        return courses;
+        return coursesRepository.findAll().stream().filter(a->a.getCourse_students().contains(user)).toList();
     }
     private void deleteContents(File courseDir){
         String[]entries = courseDir.list();

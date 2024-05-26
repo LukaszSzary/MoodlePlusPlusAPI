@@ -23,9 +23,6 @@ public class Courses {
     @OneToMany(mappedBy = "course", orphanRemoval = true)
     private List<Tasks> tasks = new ArrayList<>();
 
-
-
-
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name="course_owners",
@@ -41,5 +38,6 @@ public class Courses {
             joinColumns = @JoinColumn(name ="courses_id"),
             inverseJoinColumns = @JoinColumn(name="users_id")
     )
+    @JsonIgnore
     private List<Users> course_students = new ArrayList<>();
 }

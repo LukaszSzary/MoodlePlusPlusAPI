@@ -54,8 +54,11 @@ public class FileService {
             }
         }
         //checks if the file has proper extension
-        if(!(task.getAvailable_file_extensions().isEmpty() || task.getAvailable_file_extensions() == null)){
+        if(!( task.getAvailable_file_extensions() == null || task.getAvailable_file_extensions().isEmpty() )){
             String[] extensions =  task.getAvailable_file_extensions().split(";");
+            if(!file.getOriginalFilename().contains(".")){
+                throw new Exception("Uploaded file has no extension");
+            }
             String fileExtension = Arrays.stream(file.getOriginalFilename().split("\\.")).toList().getLast();
             if(!Arrays.stream(extensions).toList().contains(fileExtension)) {
                 throw new Exception("Invalid file extension");

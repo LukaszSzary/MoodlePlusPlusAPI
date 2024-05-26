@@ -41,6 +41,7 @@ public class Users implements UserDetails {
     private List<Courses> courses_joined;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @JsonIgnore
     private List<Files> files = new ArrayList<>();
     @Override
     @JsonIgnore

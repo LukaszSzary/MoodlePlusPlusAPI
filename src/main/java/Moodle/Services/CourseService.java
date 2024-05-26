@@ -130,16 +130,10 @@ public class CourseService {
         }
 
         return true;
-
     }
 
-    public List<CourseIdTitleDto> getAllCourses() {
-        List<Courses> courses = coursesRepository.findAll();
-        List<CourseIdTitleDto> outputCourses = new ArrayList<>();
-        for (Courses c:courses) {
-            outputCourses.add(new CourseIdTitleDto(c));
-        }
-        return outputCourses;
+    public List<Courses> getAllCourses() {
+        return coursesRepository.findAll();
     }
 
     public Courses getCourse(int id) throws Exception{

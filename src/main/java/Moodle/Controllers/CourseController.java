@@ -108,7 +108,7 @@ public class CourseController {
             return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
         }
     }
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
+
     @PostMapping("/{id}/add/student")
     public ResponseEntity<Object> addStudentToCourse(@PathVariable int id, @RequestBody @Valid Users user,@CurrentSecurityContext(expression = "authentication")
     Authentication authentication){
@@ -123,7 +123,7 @@ public class CourseController {
         }
     }
     @GetMapping("/get/all/courses")
-    public ResponseEntity<List<CourseIdTitleDto>> getAllCourses(){
+    public ResponseEntity<List<Courses>> getAllCourses(){
         return ResponseEntity.ok(courseService.getAllCourses());
     }
     @GetMapping("/get/course/details/{id}")

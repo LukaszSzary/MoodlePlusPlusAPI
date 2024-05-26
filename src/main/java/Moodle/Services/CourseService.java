@@ -103,9 +103,9 @@ public class CourseService {
     public boolean addStudentToCourse(int id, Users user, Users authenticatedUser) throws Exception {
         Courses course = coursesRepository.findById(id).orElseThrow(()->new Exception("Course with provided id can't be found"));
 
-        if(!(course.getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole()== Role.admin)){
-            throw new Exception("Privileges not sufficient");
-        }
+//        if(!(course.getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole()== Role.admin)){
+//            throw new Exception("Privileges not sufficient");
+//        }
 
         if(usersRepository.existsByIdAndNameAndSurnameAndMail(user.getId(), user.getName(), user.getSurname(), user.getMail())){
             course.getCourse_students().add(user);

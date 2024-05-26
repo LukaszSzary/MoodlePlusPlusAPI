@@ -137,7 +137,7 @@ public class CourseController {
 
     }
     @GetMapping("/get/user/courses")
-    public ResponseEntity<List<CourseIdTitleDto>> getAllUserCourses(@CurrentSecurityContext(expression = "authentication")
+    public ResponseEntity<List<Courses>> getAllUserCourses(@CurrentSecurityContext(expression = "authentication")
     Authentication authentication){
         return ResponseEntity.ok(courseService.getAllUserCourses(controllerService.getAuthenticatedUser(authentication)));
     }

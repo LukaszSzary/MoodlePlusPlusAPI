@@ -140,15 +140,15 @@ public class CourseService {
         return coursesRepository.findById(id).orElseThrow(()->new Exception("There is no course with this id"));
     }
 
-    public List<CourseIdTitleDto> getAllUserCourses(Users user) {
-        List<Courses> courses = coursesRepository.findAll();
-        List<CourseIdTitleDto> outputCourses = new ArrayList<>();
-        for (Courses c:courses) {
-            if(c.getCourse_students().contains(user) || c.getCourse_owners().contains(user)) {
-                outputCourses.add(new CourseIdTitleDto(c));
-            }
-        }
-        return outputCourses;
+    public List<Courses> getAllUserCourses(Users user) {
+        List<Courses> courses = coursesRepository.findAll().stream().filter(a->a.getCourse_students().contains(user)).toList();
+//        List<CourseIdTitleDto> outputCourses = new ArrayList<>();
+//        for (Courses c:courses) {
+//            if(c.getCourse_students().contains(user) || c.getCourse_owners().contains(user)) {
+//                outputCourses.add(new CourseIdTitleDto(c));
+//            }
+//        }
+        return courses;
     }
     private void deleteContents(File courseDir){
         String[]entries = courseDir.list();

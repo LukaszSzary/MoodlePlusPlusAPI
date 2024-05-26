@@ -114,7 +114,7 @@ public class CourseController {
     Authentication authentication){
         try {
             if(courseService.addStudentToCourse(id, user, controllerService.getAuthenticatedUser(authentication))){
-                return ResponseEntity.ok("user added as owner");
+                return ResponseEntity.ok("student added successfully");
             }
             return new ResponseEntity<>("Unknown error",HttpStatus.I_AM_A_TEAPOT);
         }

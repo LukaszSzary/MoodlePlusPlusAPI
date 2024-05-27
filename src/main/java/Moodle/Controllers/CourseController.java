@@ -94,12 +94,12 @@ public class CourseController {
             return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
         }
     }
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
-    @DeleteMapping("/remove/student/{tutorId}/from/course/{courseId}")
-    public ResponseEntity<Object> removeStudentFromCourse(@PathVariable int tutorId, @PathVariable int courseId ,@CurrentSecurityContext(expression = "authentication")
+
+    @DeleteMapping("/remove/student/{userId}/from/course/{courseId}")
+    public ResponseEntity<Object> removeStudentFromCourse(@PathVariable int userId, @PathVariable int courseId ,@CurrentSecurityContext(expression = "authentication")
     Authentication authentication){
         try {
-            if(courseService.removeStudentFromCourse(tutorId, courseId, controllerService.getAuthenticatedUser(authentication))){
+            if(courseService.removeStudentFromCourse(userId, courseId, controllerService.getAuthenticatedUser(authentication))){
                 return ResponseEntity.ok("Student deleted");
             }
             return new ResponseEntity<>("Unknown error",HttpStatus.I_AM_A_TEAPOT);

@@ -116,12 +116,12 @@ public class CourseService {
             throw new Exception("User does not exist");
         }
     }
-    public boolean removeStudentFromCourse(int courseId, int userId, Users authenticatedUser) throws Exception {
+    public boolean removeStudentFromCourse(int userId,int courseId, Users authenticatedUser) throws Exception {
         Courses course = coursesRepository.findById(courseId).orElseThrow(()->new Exception("Course with provided id can't be found"));
 
-        if(!(course.getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole()== Role.admin)){
-            throw new Exception("You have to be course owner or admin");
-        }
+//        if(!(course.getCourse_owners().contains(authenticatedUser) || authenticatedUser.getRole()== Role.admin)){
+//            throw new Exception("You have to be course owner or admin");
+//        }
 
         Users user = usersRepository.findById(userId).orElseThrow(()->new Exception("User does not exist"));
         if(course.getCourse_students().contains(user)){

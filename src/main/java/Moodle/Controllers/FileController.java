@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 
 @RestController
 public class FileController {
@@ -28,10 +29,10 @@ public class FileController {
     }
 
     @PostMapping("/save/file/to/task/{id}")
-    public ResponseEntity<?> saveFile(@RequestParam("file") MultipartFile file, @PathVariable int id,@CurrentSecurityContext(expression = "authentication")
+    public ResponseEntity<?> saveFile(@RequestParam("file") List<MultipartFile> files, @PathVariable int id, @CurrentSecurityContext(expression = "authentication")
                                     Authentication authentication) {
         try {
-            return ResponseEntity.ok(fileService.saveFile(file,id, controllerService.getAuthenticatedUser(authentication)));
+            return ResponseEntity.ok(fileService.saveFiles(files,id, controllerService.getAuthenticatedUser(authentication)));
        }
        catch (Exception e){
            return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);

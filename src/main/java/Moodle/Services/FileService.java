@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -36,7 +37,7 @@ public class FileService {
         this.coursesRepository = coursesRepository;
     }
 
-    public Files saveFile(MultipartFile file, int taskId, Users authenticatedUser) throws Exception{
+    public List<Files> saveFiles(List<MultipartFile> files, int taskId, Users authenticatedUser) throws Exception{
         Tasks task = tasksRepository.findById(taskId).orElseThrow(()->new Exception("No such task exist"));
         //check if user has authority to save file to this task
         if(!(task.getCourse().getCourse_students().contains(authenticatedUser) || task.getCourse().getCourse_owners().contains(authenticatedUser))){
@@ -53,43 +54,50 @@ public class FileService {
                 throw new Exception("Time for submitting files has ended");
             }
         }
-        //checks if the file has proper extension
-        if(!( task.getAvailable_file_extensions() == null || task.getAvailable_file_extensions().isEmpty() )){
-            String[] extensions =  task.getAvailable_file_extensions().split(";");
-            if(!file.getOriginalFilename().contains(".")){
-                throw new Exception("Uploaded file has no extension");
-            }
-            String fileExtension = Arrays.stream(file.getOriginalFilename().split("\\.")).toList().getLast();
-            if(!Arrays.stream(extensions).toList().contains(fileExtension)) {
-                throw new Exception("Invalid file extension");
+        //checks if the files has proper extension
+        for(MultipartFile f : files) {
+            if (!(task.getAvailable_file_extensions() == null || task.getAvailable_file_extensions().isEmpty())) {
+                String[] extensions = task.getAvailable_file_extensions().split(";");
+                if (!f.getOriginalFilename().contains(".")) {
+                    throw new Exception("Uploaded file has no extension");
+                }
+                String fileExtension = Arrays.stream(f.getOriginalFilename().split("\\.")).toList().getLast();
+                if (!Arrays.stream(extensions).toList().contains(fileExtension)) {
+                    throw new Exception("Invalid file extension");
+                }
             }
         }
         //check if user can add another file
-        if(task.getMax_total_files_amount() == task.getFiles().stream().filter(n-> n.getUser().equals(authenticatedUser)).count()){
+        if(task.getMax_total_files_amount() < task.getFiles().stream().filter(n-> n.getUser().equals(authenticatedUser)).count() + files.size()){
             throw new Exception("Max number of uploaded files reached");
         }
         //check naming if convention is preserved
-        String properBeginning = task.getTitle() + authenticatedUser.getName() + authenticatedUser.getSurname();
-        if(!file.getOriginalFilename().startsWith(properBeginning)){
-            throw new Exception("File name defies naming convention(tasktitle+name+surname+'whateverYouWant')");
-        }
+        for(MultipartFile f : files) {
+            String properBeginning = task.getTitle() + authenticatedUser.getName() + authenticatedUser.getSurname();
+            if(!f.getOriginalFilename().startsWith(properBeginning)){
+                throw new Exception("File name defies naming convention(tasktitle+name+surname+'whateverYouWant')");
+            }
+       }
 
-        //create file entity
-        Files newFile = new Files();
-        newFile.setDate_of_upload(LocalDate.now());
-        newFile.setTask(task);
-        newFile.setName(file.getOriginalFilename());
-        newFile.setVolume((int)(file.getSize())/1024);
-        newFile.setExtension(Arrays.stream(file.getOriginalFilename().split("\\.")).toList().getLast());
-        newFile.setUser(authenticatedUser);
-        filesRepository.save(newFile);
-
+        List<Files> filesToReturn = new LinkedList<>();
         //save file
-        Path pathToFile = Paths.get(rootPath + File.separator + task.getCourse().getTitle() + File.separator + task.getTitle() + File.separator + file.getOriginalFilename());
-        InputStream inputStream = file.getInputStream();
-        java.nio.file.Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
+        for(MultipartFile f : files) {
+            Path pathToFile = Paths.get(rootPath + File.separator + task.getCourse().getTitle() + File.separator + task.getTitle() + File.separator + f.getOriginalFilename());
+            InputStream inputStream = f.getInputStream();
+            java.nio.file.Files.copy(inputStream, pathToFile, StandardCopyOption.REPLACE_EXISTING);
 
-        return newFile;
+            //create file entity
+            Files newFile = new Files();
+            newFile.setDate_of_upload(LocalDate.now());
+            newFile.setTask(task);
+            newFile.setName(f.getOriginalFilename());
+            newFile.setVolume((int) (f.getSize()) / 1024);
+            newFile.setExtension(Arrays.stream(f.getOriginalFilename().split("\\.")).toList().getLast());
+            newFile.setUser(authenticatedUser);
+            filesRepository.save(newFile);
+            filesToReturn.add(newFile);
+        }
+        return filesToReturn;
     }
     public List<Files> getUserFilesSubmittedForTask (int taskId, Users authenticatedUser) throws Exception{
         Tasks task = tasksRepository.findById(taskId).orElseThrow(()->new Exception("No such task exist"));

@@ -26,6 +26,7 @@ public class Users implements UserDetails {
     private String mail;
 
     @JsonIgnore
+    @NotEmpty
     private String password;
     @NotNull
     private Role role;

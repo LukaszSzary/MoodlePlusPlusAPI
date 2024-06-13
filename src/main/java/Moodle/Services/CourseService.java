@@ -1,11 +1,14 @@
 package Moodle.Services;
 
+import Moodle.Dto.CourseDetailsDto;
+import Moodle.Dto.CourseDetailsTaskDto;
+import Moodle.Dto.CourseDetailsUserDto;
 import Moodle.Dto.CourseDto;
-import Moodle.Dto.CourseIdTitleDto;
 import Moodle.Model.Courses;
 import Moodle.Model.Role;
 import Moodle.Model.Tasks;
 import Moodle.Model.Users;
+
 import Moodle.Repositories.CoursesRepository;
 import Moodle.Repositories.UsersRepository;
 import Moodle.Security.StorageProperties;
@@ -13,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,8 +138,37 @@ public class CourseService {
         return coursesRepository.findAll();
     }
 
-    public Courses getCourse(int id) throws Exception{
-        return coursesRepository.findById(id).orElseThrow(()->new Exception("There is no course with this id"));
+    public CourseDetailsDto getCourse(int id) throws Exception{
+        CourseDetailsDto courseToReturn = new CourseDetailsDto();
+
+        Courses course = coursesRepository.findById(id).orElseThrow(()->new Exception("There is no course with this id"));
+        courseToReturn.setId(course.getId());
+        courseToReturn.setTitle(course.getTitle());
+
+        for(Users student: course.getCourse_students()){
+            CourseDetailsUserDto userToReturn = new CourseDetailsUserDto();
+            userToReturn.setName(student.getName());
+            userToReturn.setMail(student.getMail());
+            userToReturn.setSurname(student.getSurname());
+            userToReturn.setId(student.getId());
+
+            for(Tasks taskInCourse : course.getTasks()){
+                if (student.getFiles().isEmpty()) break;
+
+                CourseDetailsTaskDto taskToReturn = new CourseDetailsTaskDto();
+                taskToReturn.setId(taskInCourse.getId());
+                taskToReturn.setTitle(taskInCourse.getTitle());
+
+                for(Moodle.Model.Files file : taskInCourse.getFiles()){
+                    if(student.getFiles().contains(file)){
+                        taskToReturn.getUserFiles().add(file);
+                    }
+                }
+                userToReturn.getTasks().add(taskToReturn);
+            }
+            courseToReturn.getUsers().add(userToReturn);
+        }
+        return courseToReturn;
     }
 
     public List<Courses> getAllUserCourses(Users user) {

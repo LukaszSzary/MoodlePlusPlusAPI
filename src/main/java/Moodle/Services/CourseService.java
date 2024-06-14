@@ -138,6 +138,10 @@ public class CourseService {
         return coursesRepository.findAll();
     }
 
+    public Courses getCourseAndItsTasks(Integer id) throws Exception{
+        return coursesRepository.findById(id).orElseThrow(()->new Exception("No course found"));
+    }
+
     public CourseDetailsDto getCourse(int id) throws Exception{
         CourseDetailsDto courseToReturn = new CourseDetailsDto();
 

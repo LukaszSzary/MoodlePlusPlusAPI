@@ -80,6 +80,19 @@ public class CourseController {
             return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
         }
     }
+
+
+    @GetMapping("/get/course/and/tasks/{id}")
+    public ResponseEntity<Object> addTutorToCourse(@PathVariable int id){
+        try {
+
+            return ResponseEntity.ok(courseService.getCourseAndItsTasks(id));
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.toString(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PreAuthorize("hasAuthority('admin') or hasAuthority('tutor')")
     @DeleteMapping("/remove/tutor/{tutorId}/from/course/{courseId}")
     public ResponseEntity<Object> removeTutorFromCourse(@PathVariable int tutorId, @PathVariable int courseId ,@CurrentSecurityContext(expression = "authentication")

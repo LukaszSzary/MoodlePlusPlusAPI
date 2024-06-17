@@ -29,7 +29,7 @@ public class Courses {
             joinColumns = @JoinColumn(name ="courses_id"),
             inverseJoinColumns = @JoinColumn(name="users_id")
     )
-    @JsonIgnore
+
     private List<Users> course_owners = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
